@@ -1,5 +1,5 @@
 <launch>
-    <arg name="node_name" default="teleop_legged_keyboard" />
+    <arg name="robot_name" default="/" />
     <arg name="twist_publisher_name" default="cmd_vel" />
     <arg name="pose_publisher_name" default="body_pose" />
     <arg name="speed" default="0.5" />
@@ -9,7 +9,7 @@
     <arg name="repeat_rate" default="0.0" />
     <arg name="key_timeout" default="0.0" />
 
-    <param name="node_name" value="$(arg node_name)" />
+    <param name="robot_name" value="$(arg robot_name)" />
     <param name="twist_publisher_name" value="$(arg twist_publisher_name)" />
     <param name="pose_publisher_name" value="$(arg pose_publisher_name)" />
     <param name="speed" value="$(arg speed)" />
@@ -19,5 +19,5 @@
     <param name="repeat_rate" value="$(arg repeat_rate)" />
     <param name="key_timeout" value="$(arg key_timeout)" />
 
-    <node name="$(arg node_name)" pkg="teleop_legged_robots" type="teleop_legged_keyboard.py" output="screen"/>
+    <node name="teleop_legged_keyboard" pkg="teleop_legged_robots" type="teleop_legged_keyboard.py" ns="$(arg robot_name)" output="screen"/>
 </launch>

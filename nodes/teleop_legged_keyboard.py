@@ -32,15 +32,14 @@ For Holonomic mode (strafing), hold down the shift key:
 
 Body pose:
 ---------------------------
-1/2 : (+/-) x
-3/4 : (+/-) y
+1/2 : move the body forward/back (+/-x)
+3/4 : move the body right/left (+/-y)
 
-5 : up (+z)
-6 : down (-z)
+5/6 : move the body up/down (+/-z)
 
-a/s : (+/-) roll
-d/f : (+/-) pitch
-g/h : (+/-) yaw
+a/s : (+/-) body roll
+d/f : (+/-) body pitch
+g/h : (+/-) body yaw
 
 anything else : stop
 
@@ -108,8 +107,9 @@ speedPoseBindings = {
 class PublishThread(threading.Thread):
     def __init__(self, rate):
         super(PublishThread, self).__init__()
-        twist_publisher_name = rospy.get_param("~/twist_publisher_name", "cmd_vel")
-        pose_publisher_name = rospy.get_param("~/pose_publisher_name", "body_pose")
+        robot_name = rospy.get_param("~/robot_name", "/")
+        twist_publisher_name = rospy.get_param("~/twist_publisher_name", robot_name + "/cmd_vel")
+        pose_publisher_name = rospy.get_param("~/pose_publisher_name", robot_name + "/body_pose")
         self.twist_publisher = rospy.Publisher(twist_publisher_name, Twist, queue_size=1)
         self.pose_publisher = rospy.Publisher(pose_publisher_name, Pose, queue_size=1)
         self.x = 0.0
@@ -140,9 +140,9 @@ class PublishThread(threading.Thread):
 
     def wait_for_subscribers(self):
         i = 0
-        while not rospy.is_shutdown():
-            if self.twist_publisher.get_num_connections() != 0 and self.pose_publisher.get_num_connections() != 0:
-                break
+        # rospy.loginfo(str(self.twist_publisher.get_num_connections()))
+        while not rospy.is_shutdown() and (self.twist_publisher.get_num_connections() == 0 or
+                                           self.pose_publisher.get_num_connections() == 0):
             if i == 4 and self.twist_publisher.get_num_connections() == 0 \
                     and self.pose_publisher.get_num_connections() == 0:
                 print("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
@@ -261,8 +261,7 @@ def pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw):
 if __name__ == "__main__":
     settings = termios.tcgetattr(sys.stdin)
 
-    node_name = rospy.get_param("~/node_name", "teleop_legged_keyboard")
-    rospy.init_node(node_name)
+    rospy.init_node("teleop_legged")
 
     speed = rospy.get_param("~/speed", 0.5)
     turn = rospy.get_param("~/turn", 1.0)
@@ -292,8 +291,8 @@ if __name__ == "__main__":
         pub_thread.update(x, y, z, th, speed, turn, pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw, pose_speed,
                           pose_turn)
 
-        print(msg)
-        print(vels(speed, turn))
+        rospy.loginfo(msg)
+        rospy.loginfo(vels(speed, turn))
         while (1):
             key = getKey(key_timeout)
             if key in moveBindings.keys():
@@ -304,10 +303,13 @@ if __name__ == "__main__":
             elif key in speedBindings.keys():
                 speed = speed * speedBindings[key][0]
                 turn = turn * speedBindings[key][1]
-
-                print(vels(speed, turn))
+                x = 0
+                y = 0
+                z = 0
+                th = 0
+                rospy.loginfo(vels(speed, turn))
                 if status == 14:
-                    print(msg)
+                    rospy.loginfo(msg)
                 status = (status + 1) % 15
 
             elif key in poseBindings.keys():
@@ -322,18 +324,18 @@ if __name__ == "__main__":
                 pose_pitch += pose_turn * poseBindings[key][4]
                 pose_yaw += pose_turn * poseBindings[key][5]
 
-                print(pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw))
+                rospy.loginfo(pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw))
                 if status == 14:
-                    print(msg)
+                    rospy.loginfo(msg)
                 status = (status + 1) % 15
 
             elif key in speedPoseBindings.keys():
                 pose_speed = pose_speed * speedPoseBindings[key][0]
                 pose_turn = pose_turn * speedPoseBindings[key][1]
 
-                print(pose_vel(pose_speed, pose_turn))
+                rospy.loginfo(pose_vel(pose_speed, pose_turn))
                 if status == 14:
-                    print(msg)
+                    rospy.loginfo(msg)
                 status = (status + 1) % 15
 
             else:
@@ -352,7 +354,7 @@ if __name__ == "__main__":
                               pose_speed, pose_turn)
 
     except Exception as e:
-        print(e)
+        rospy.logerr(e)
 
     finally:
         pub_thread.stop()

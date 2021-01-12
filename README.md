@@ -11,9 +11,9 @@ Launch with user-defined values.
 ```
 roslaunch teleop_legged_robots teleop.launch speed:=0.5 turn:=1.0 pose_speed:=0.01 pose_turn:=0.1
 ```
-Launch with a different node name to run multiple teleops:
+Launch with a different robot name to run multiple teleops for multi-robot simulation:
 ```
-roslaunch teleop_legged_robots teleop.launch node_name:="teleop_for_robot2"
+roslaunch teleop_legged_robots teleop.launch robot_name:="robot2"
 ```
 Publishing to a different topic (in this case `robot1/cmd_vel` and `robot1/body_pose`).
 ```
@@ -62,26 +62,25 @@ CTRL-C to quit
 
 # Repeat Rate
 
-If your mobile base requires constant updates on the cmd\_vel topic, teleop\_twist\_keyboard can be configured to repeat the last command at a fixed interval, using the `repeat_rate` private parameter.
-
-For example, to repeat the last command at 10Hz:
+If you need to constantly publish on the topic cmd\_vel, the teleop\_ twist\_ keyboard can be adjusted to repeat the last command at a fixed interval using the `repeat_rate` parameter.
+For example, to repeat the last command at 50Hz:
 
 ```
-roslaunch teleop_legged_robots teleop.launch repeat_rate:=10.0
+roslaunch teleop_legged_robots teleop.launch repeat_rate:=50.0
 ```
 
-It is _highly_ recommened that the repeat rate be used in conjunction with the key timeout, to prevent runaway robots.
+It is recommended to use the repeat rate in connection with the key timeout, in order to prevent runaway robots.
 
 # Key Timeout
 
-Teleop\_twist\_keyboard can be configured to stop your robot if it does not receive any key presses in a configured time period, using the `key_timeout` private parameter.
+You can can adjust teleop\_twist\_keyboard to stop your robot if no key presses in a configured time period, using the `key_timeout` parameter.
 
-For example, to stop your robot if a keypress has not been received in 0.6 seconds:
+For example, to stop your robot if a keypress has not been received in 2.0 seconds:
 ```
-roslaunch teleop_legged_robots teleop.launch key_timeout:=0.6
+roslaunch teleop_legged_robots teleop.launch key_timeout:=2.0
 ```
 
-It is recommended that you set `key_timeout` higher than the initial key repeat delay on your system (This delay is 0.5 seconds by default on Ubuntu, but can be adjusted).
+It is recommended to set `key_timeout` higher than the initial key repeat delay on your system (This delay is 0.5 seconds by default on Ubuntu, but can be adjusted).
 
 # Credits:
 [teleop_twist_keyboard](https://github.com/ros-teleop/teleop_twist_keyboard/)
