@@ -11,7 +11,7 @@ Launch with user-defined values.
 ```
 roslaunch teleop_legged_robots teleop.launch speed:=0.5 turn:=1.0 pose_speed:=0.01 pose_turn:=0.1
 ```
-Launch with a different robot name to run multiple teleops for multi-robot simulation:
+Launch with a different robot name to run multiple teleops for multi-robots simulation:
 ```
 roslaunch teleop_legged_robots teleop.launch robot_name:="robot2"
 ```
@@ -37,15 +37,14 @@ For Holonomic mode (strafing), hold down the shift key:
 
 Body pose:
 ---------------------------
-1/2 : (+/-) x
-3/4 : (+/-) y
+1/2 : move the body forward/back (+/-x)
+3/4 : move the body right/left (+/-y)
 
-5 : up (+z)
-6 : down (-z)
+5/6 : move the body up/down (+/-z)
 
-a/s : (+/-) roll
-d/f : (+/-) pitch
-g/h : (+/-) yaw
+a/s : (+/-) body roll
+d/f : (+/-) body pitch
+g/h : (+/-) body yaw
 
 anything else : stop
 
@@ -62,7 +61,7 @@ CTRL-C to quit
 
 # Repeat Rate
 
-If you need to constantly publish on the topic cmd\_vel, the teleop\_ twist\_ keyboard can be adjusted to repeat the last command at a fixed interval using the `repeat_rate` parameter.
+If you need to constantly publish on the topic cmd_vel, the teleop_legged_keyboard can be adjusted to repeat the last command at a fixed interval using the `repeat_rate` parameter.
 For example, to repeat the last command at 50Hz:
 
 ```
@@ -73,7 +72,7 @@ It is recommended to use the repeat rate in connection with the key timeout, in 
 
 # Key Timeout
 
-You can can adjust teleop\_twist\_keyboard to stop your robot if no key presses in a configured time period, using the `key_timeout` parameter.
+You can adjust teleop_legged_keyboard to stop your robot if no key presses in a configured time period, using the `key_timeout` parameter.
 
 For example, to stop your robot if a keypress has not been received in 2.0 seconds:
 ```
