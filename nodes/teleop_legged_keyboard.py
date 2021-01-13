@@ -17,7 +17,7 @@ import sys, select, termios, tty
 import tf
 
 msg = """
-Reading from the keyboard  and Publishing to Twist!
+Reading from the keyboard  and Publishing to Twist and Pose!
 ---------------------------
 Moving around:
    u    i    o
@@ -47,8 +47,8 @@ q/z : increase/decrease max speeds by 10%
 w/x : increase/decrease only linear speed by 10%
 e/c : increase/decrease only angular speed by 10%
 
-r/v : increase/decrease body pose translation by 10%
-t/b : increase/decrease body pose angular speed by 10%
+r/v : increase/decrease body's pose translation by 10%
+t/b : increase/decrease body's pose angular speed by 10%
 
 CTRL-C to quit
 """
@@ -140,7 +140,6 @@ class PublishThread(threading.Thread):
 
     def wait_for_subscribers(self):
         i = 0
-        # rospy.loginfo(str(self.twist_publisher.get_num_connections()))
         while not rospy.is_shutdown() and (self.twist_publisher.get_num_connections() == 0 or
                                            self.pose_publisher.get_num_connections() == 0):
             if i == 4 and self.twist_publisher.get_num_connections() == 0 \
@@ -180,7 +179,8 @@ class PublishThread(threading.Thread):
 
     def stop(self):
         self.done = True
-        self.update(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.update(0, 0, 0, 0, 0, 0, self.pose_x, self.pose_y, self.pose_z, self.pose_roll, self.pose_pitch,
+                    self.pose_yaw, self.pose_speed, self.pose_turn)
         self.join()
 
     def run(self):
@@ -226,10 +226,18 @@ class PublishThread(threading.Thread):
         twist.angular.x = 0
         twist.angular.y = 0
         twist.angular.z = 0
-        pose.orientation.x = 0
-        pose.orientation.y = 0
-        pose.orientation.z = 0
-        pose.orientation.w = 0
+        pose.position.x = self.pose_x
+        pose.position.y = self.pose_y
+        pose.position.z = self.pose_z
+        pose_roll_euler = self.pose_roll
+        pose_pitch_euler = self.pose_pitch
+        pose_yaw_euler = self.pose_yaw
+
+        quaternion = tf.transformations.quaternion_from_euler(pose_roll_euler, pose_pitch_euler, pose_yaw_euler)
+        pose.orientation.x = quaternion[0]
+        pose.orientation.y = quaternion[1]
+        pose.orientation.z = quaternion[2]
+        pose.orientation.w = quaternion[3]
         self.twist_publisher.publish(twist)
         self.pose_publisher.publish(pose)
 
@@ -313,16 +321,16 @@ if __name__ == "__main__":
                 status = (status + 1) % 15
 
             elif key in poseBindings.keys():
-                x = 0
-                y = 0
-                z = 0
-                th = 0
                 pose_x += pose_speed * poseBindings[key][0]
                 pose_y += pose_speed * poseBindings[key][1]
                 pose_z += pose_speed * poseBindings[key][2]
                 pose_roll += pose_turn * poseBindings[key][3]
                 pose_pitch += pose_turn * poseBindings[key][4]
                 pose_yaw += pose_turn * poseBindings[key][5]
+                x = 0
+                y = 0
+                z = 0
+                th = 0
 
                 rospy.loginfo(pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw))
                 if status == 14:
@@ -332,6 +340,10 @@ if __name__ == "__main__":
             elif key in speedPoseBindings.keys():
                 pose_speed = pose_speed * speedPoseBindings[key][0]
                 pose_turn = pose_turn * speedPoseBindings[key][1]
+                x = 0
+                y = 0
+                z = 0
+                th = 0
 
                 rospy.loginfo(pose_vel(pose_speed, pose_turn))
                 if status == 14:
