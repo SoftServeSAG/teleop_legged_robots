@@ -42,9 +42,9 @@ Body pose:
 
 5/6 : move the body up/down (+/-z)
 
-a/s : (+/-) body roll
-d/f : (+/-) body pitch
-g/h : (+/-) body yaw
+a/s : (+/-) body's roll
+d/f : (+/-) body's pitch
+g/h : (+/-) body's yaw
 
 anything else : stop
 
