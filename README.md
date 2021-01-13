@@ -22,7 +22,7 @@ roslaunch teleop_legged_robots teleop.launch twist_publisher_name:="robot1/cmd_v
 
 # Usage
 ```
-Reading from the keyboard  and Publishing to Twist!
+Reading from the keyboard and Publishing to Twist and Pose!
 ---------------------------
 Moving around:
    u    i    o
@@ -42,9 +42,9 @@ Body pose:
 
 5/6 : move the body up/down (+/-z)
 
-a/s : (+/-) body's roll
-d/f : (+/-) body's pitch
-g/h : (+/-) body's yaw
+a/s : body's roll
+d/f : body's pitch
+g/h : body's yaw
 
 anything else : stop
 
@@ -52,11 +52,10 @@ q/z : increase/decrease max speeds by 10%
 w/x : increase/decrease only linear speed by 10%
 e/c : increase/decrease only angular speed by 10%
 
-r/v : increase/decrease body pose translation by 10%
-t/b : increase/decrease body pose angular speed by 10%
+r/v : increase/decrease body's pose translation by 10%
+t/b : increase/decrease body's pose angular speed by 10%
 
 CTRL-C to quit
-
 ```
 
 # Repeat Rate
@@ -81,5 +80,5 @@ roslaunch teleop_legged_robots teleop.launch key_timeout:=2.0
 
 It is recommended to set `key_timeout` higher than the initial key repeat delay on your system (This delay is 0.5 seconds by default on Ubuntu, but can be adjusted).
 
-# Credits:
+# Inspiration:
 [teleop_twist_keyboard](https://github.com/ros-teleop/teleop_twist_keyboard/)

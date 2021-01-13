@@ -17,7 +17,7 @@ import sys, select, termios, tty
 import tf
 
 msg = """
-Reading from the keyboard  and Publishing to Twist and Pose!
+Reading from the keyboard and Publishing to Twist and Pose!
 ---------------------------
 Moving around:
    u    i    o
