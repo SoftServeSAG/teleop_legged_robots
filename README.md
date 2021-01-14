@@ -1,4 +1,3 @@
-# Note! For refactorng only
 # teleop_legged_robots
 Generic Keyboard Teleop for legged robots using ROS
 
