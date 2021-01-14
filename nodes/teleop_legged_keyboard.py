@@ -144,12 +144,9 @@ class PublishThread(threading.Thread):
         while not rospy.is_shutdown() and (self.twist_publisher.get_num_connections() == 0 or
                                            self.pose_publisher.get_num_connections() == 0):
             if i == self.delay_wait_print:
-                if self.twist_publisher.get_num_connections() == 0 and self.pose_publisher.get_num_connections() == 0:
+                if self.twist_publisher.get_num_connections() == 0:
                     rospy.loginfo("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
-                    rospy.loginfo("Waiting for subscriber to connect to {}".format(self.pose_publisher.name))
-                elif self.twist_publisher.get_num_connections() == 0:
-                    rospy.loginfo("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
-                else:
+                if self.pose_publisher.get_num_connections() == 0:
                     rospy.loginfo("Waiting for subscriber to connect to {}".format(self.pose_publisher.name))
             rospy.sleep(0.5)
             i += 1
