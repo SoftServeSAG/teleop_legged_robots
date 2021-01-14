@@ -8,6 +8,7 @@
     <arg name="pose_turn" default="0.1" />
     <arg name="repeat_rate" default="0.0" />
     <arg name="key_timeout" default="0.0" />
+    <arg name="msg_max" default="14.0" />
 
     <param name="robot_name" value="$(arg robot_name)" />
     <param name="twist_publisher_name" value="$(arg twist_publisher_name)" />
@@ -18,6 +19,7 @@
     <param name="pose_turn" value="$(arg pose_turn)" />
     <param name="repeat_rate" value="$(arg repeat_rate)" />
     <param name="key_timeout" value="$(arg key_timeout)" />
+    <param name="msg_max" value="$(arg msg_max)" />
 
     <node name="teleop_legged_keyboard" pkg="teleop_legged_robots" type="teleop_legged_keyboard.py" ns="$(arg robot_name)" output="screen"/>
 </launch>

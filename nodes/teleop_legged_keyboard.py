@@ -128,6 +128,7 @@ class PublishThread(threading.Thread):
         self.pose_turn = 0.0
         self.condition = threading.Condition()
         self.done = False
+        self.delay_wait_print = 4
 
         # Set timeout to None if rate is 0 (causes new_message to wait forever
         # for new data to publish)
@@ -142,17 +143,14 @@ class PublishThread(threading.Thread):
         i = 0
         while not rospy.is_shutdown() and (self.twist_publisher.get_num_connections() == 0 or
                                            self.pose_publisher.get_num_connections() == 0):
-            if i == 4 and self.twist_publisher.get_num_connections() == 0 \
-                    and self.pose_publisher.get_num_connections() == 0:
-                print("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
-                print("Waiting for subscriber to connect to {}".format(self.pose_publisher.name))
-            elif i == 4 and self.twist_publisher.get_num_connections() == 0:
-                print("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
-            elif i == 4 and self.pose_publisher.get_num_connections() == 0:
-                print("Waiting for subscriber to connect to {}".format(self.pose_publisher.name))
+            if i == self.delay_wait_print:
+                if self.twist_publisher.get_num_connections() == 0:
+                    rospy.loginfo("Waiting for subscriber to connect to {}".format(self.twist_publisher.name))
+                if self.pose_publisher.get_num_connections() == 0:
+                    rospy.loginfo("Waiting for subscriber to connect to {}".format(self.pose_publisher.name))
             rospy.sleep(0.5)
             i += 1
-            i = i % 5
+            i = i % (self.delay_wait_print + 1)
         if rospy.is_shutdown():
             raise Exception("Got shutdown request before subscribers connected")
 
@@ -266,6 +264,12 @@ def pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw):
         pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw)
 
 
+def check_status_msg(status_msg, msg_max):
+    if status_msg == msg_max:
+        rospy.loginfo(msg)
+    return (status_msg + 1) % (msg_max + 1)
+
+
 if __name__ == "__main__":
     settings = termios.tcgetattr(sys.stdin)
 
@@ -277,6 +281,7 @@ if __name__ == "__main__":
     pose_turn = rospy.get_param("~/pose_turn", 0.1)
     repeat = rospy.get_param("~/repeat_rate", 0.0)
     key_timeout = rospy.get_param("~/key_timeout", 0.0)
+    msg_max = rospy.get_param("~/msg_max", 14)
     if key_timeout == 0.0:
         key_timeout = None
 
@@ -292,7 +297,7 @@ if __name__ == "__main__":
     pose_roll = 0
     pose_pitch = 0
     pose_yaw = 0
-    status = 0
+    status_msg = 0  # number of printed additional messages
 
     try:
         pub_thread.wait_for_subscribers()
@@ -316,9 +321,7 @@ if __name__ == "__main__":
                 z = 0
                 th = 0
                 rospy.loginfo(vels(speed, turn))
-                if status == 14:
-                    rospy.loginfo(msg)
-                status = (status + 1) % 15
+                status_msg = check_status_msg(status_msg, msg_max)
 
             elif key in poseBindings.keys():
                 pose_x += pose_speed * poseBindings[key][0]
@@ -333,9 +336,7 @@ if __name__ == "__main__":
                 th = 0
 
                 rospy.loginfo(pose_print(pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw))
-                if status == 14:
-                    rospy.loginfo(msg)
-                status = (status + 1) % 15
+                status_msg = check_status_msg(status_msg, msg_max)
 
             elif key in speedPoseBindings.keys():
                 pose_speed = pose_speed * speedPoseBindings[key][0]
@@ -346,9 +347,7 @@ if __name__ == "__main__":
                 th = 0
 
                 rospy.loginfo(pose_vel(pose_speed, pose_turn))
-                if status == 14:
-                    rospy.loginfo(msg)
-                status = (status + 1) % 15
+                status_msg = check_status_msg(status_msg, msg_max)
 
             else:
                 # Skip updating cmd_vel if key timeout and robot already
@@ -359,7 +358,7 @@ if __name__ == "__main__":
                 y = 0
                 z = 0
                 th = 0
-                if key == '\x03':
+                if key == '\x03':      # Ctrl + C
                     break
 
             pub_thread.update(x, y, z, th, speed, turn, pose_x, pose_y, pose_z, pose_roll, pose_pitch, pose_yaw,

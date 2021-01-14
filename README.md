@@ -1,3 +1,4 @@
+# Note! For refactorng only
 # teleop_legged_robots
 Generic Keyboard Teleop for legged robots using ROS
 
@@ -79,6 +80,14 @@ roslaunch teleop_legged_robots teleop.launch key_timeout:=2.0
 ```
 
 It is recommended to set `key_timeout` higher than the initial key repeat delay on your system (This delay is 0.5 seconds by default on Ubuntu, but can be adjusted).
+
+# Print the usage message
+Having teleop launched, the message on how to use teleop is printed. Also, the teleop prints the current values of the desired speeds and body's poses if they changed. 
+When the terminal screen is full the message of usage is refreshed. You can adjust the rate of refreshing using the `msg_max` parameter. 
+For example, refresh usage message if the additional message were printed 16 times (default 14):
+```
+roslaunch teleop_legged_robots teleop.launch msg_max:=16.0
+```
 
 # Inspiration:
 [teleop_twist_keyboard](https://github.com/ros-teleop/teleop_twist_keyboard/)
