@@ -10,7 +10,7 @@ roslib.load_manifest('teleop_legged_robots')
 import rospy
 
 from geometry_msgs.msg import Twist
-from geometry_msgs.msg import Pose as Pose
+from geometry_msgs.msg import Pose
 
 import sys, select, termios, tty
 
