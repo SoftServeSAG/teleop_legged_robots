@@ -82,7 +82,7 @@ It is recommended to set `key_timeout` higher than the initial key repeat delay 
 
 # Print the usage message
 Having teleop launched, the message on how to use teleop is printed. Also, the teleop prints the current values of the desired speeds and body's poses if they changed. 
-When the terminal screen is full the message of usage is refreshed. You can adjust the rate of refreshing using the `msg_max` parameter. 
+When the terminal screen is full, the message of usage is refreshed. You can adjust the rate of refreshing using the `msg_max` parameter. 
 For example, refresh usage message if the additional message were printed 16 times (default 14):
 ```
 roslaunch teleop_legged_robots teleop.launch msg_max:=16.0
