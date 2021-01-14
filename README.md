@@ -15,9 +15,9 @@ Launch with a different robot name to run multiple teleops for multi-robots simu
 ```
 roslaunch teleop_legged_robots teleop.launch robot_name:="robot2"
 ```
-Publishing to a different topic (in this case `robot1/cmd_vel` and `robot1/body_pose`).
+Publishing to a different topic (in this case `my_cmd_vel` and `my_body_pose`).
 ```
-roslaunch teleop_legged_robots teleop.launch twist_publisher_name:="robot1/cmd_vel" pose_publisher_name:="robot1/body_pose"
+roslaunch teleop_legged_robots teleop.launch twist_publisher_name:="my_cmd_vel" pose_publisher_name:="my_body_pose"
 ```
 
 # Usage

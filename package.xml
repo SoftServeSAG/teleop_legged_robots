@@ -4,7 +4,7 @@
   <version>1.0.0</version>
   <description>Generic keyboard teleop for legged robots.</description>
 
-  <maintainer email="tboro@softserveinc.com">Taras Borovets</maintainer>
+  <maintainer email="robotics@softserveinc.com">SoftServe</maintainer>
 
   <license>BSD</license>
 
