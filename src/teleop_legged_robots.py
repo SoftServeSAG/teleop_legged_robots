@@ -14,7 +14,7 @@ from geometry_msgs.msg import Pose
 
 import sys, select, termios, tty
 
-import tf
+import tf_conversions
 
 msg = """
 Reading from the keyboard and Publishing to Twist and Pose!
@@ -205,7 +205,7 @@ class PublishThread(threading.Thread):
             pose_pitch_euler = self.pose_pitch
             pose_yaw_euler = self.pose_yaw
 
-            quaternion = tf.transformations.quaternion_from_euler(pose_roll_euler, pose_pitch_euler, pose_yaw_euler)
+            quaternion = tf_conversions.transformations.quaternion_from_euler(pose_roll_euler, pose_pitch_euler, pose_yaw_euler)
             pose.orientation.x = quaternion[0]
             pose.orientation.y = quaternion[1]
             pose.orientation.z = quaternion[2]
@@ -231,7 +231,7 @@ class PublishThread(threading.Thread):
         pose_pitch_euler = self.pose_pitch
         pose_yaw_euler = self.pose_yaw
 
-        quaternion = tf.transformations.quaternion_from_euler(pose_roll_euler, pose_pitch_euler, pose_yaw_euler)
+        quaternion = tf_conversions.transformations.quaternion_from_euler(pose_roll_euler, pose_pitch_euler, pose_yaw_euler)
         pose.orientation.x = quaternion[0]
         pose.orientation.y = quaternion[1]
         pose.orientation.z = quaternion[2]

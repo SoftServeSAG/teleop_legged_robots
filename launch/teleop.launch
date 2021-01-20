@@ -21,5 +21,5 @@
     <param name="key_timeout" value="$(arg key_timeout)" />
     <param name="msg_max" value="$(arg msg_max)" />
 
-    <node name="teleop_legged_keyboard" pkg="teleop_legged_robots" type="teleop_legged_keyboard.py" ns="$(arg robot_name)" output="screen"/>
+    <node name="teleop_legged_robots" pkg="teleop_legged_robots" type="teleop_legged_robots.py" ns="$(arg robot_name)" output="screen"/>
 </launch>
