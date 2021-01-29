@@ -2,7 +2,7 @@
 Changelog for package teleop_legged_robots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.2.0 (2020-01-29)
+1.1.1 (2020-01-29)
 ------------------
 * delete setup.py
 * update CMakeLists.txt for install
