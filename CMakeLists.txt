@@ -3,8 +3,6 @@ project(teleop_legged_robots)
 
 find_package(catkin REQUIRED)
 
-catkin_python_setup()
-
 catkin_package()
 
 ## Mark executable scripts (Python etc.) for installation
